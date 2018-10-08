@@ -1,0 +1,20 @@
+[HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Autor autor = db.Autor.Find(id);
+            try
+            {
+                db.Autor.Remove(autor);
+                db.SaveChanges();
+
+            }
+            catch (Exception)
+            {
+                ViewBag.ErrorEliminar = "Existen libros escritos por este autor, imposible eliminar.";
+
+                return View("Delete", autor);
+
+            }
+            return RedirectToAction("Delete");
+        }

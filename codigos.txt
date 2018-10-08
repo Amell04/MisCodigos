@@ -1,0 +1,115 @@
+codigo para boton de  busqueda con Ajax.
+
+<input type="text" id="busq" placeholder="Busqueda de Datos..">
+<button type="botton" class="btn btn-success" id="ok">
+
+codigo de botton con Script
+ $(document ).ready(iniciar);
+
+funtion iniciar( ){
+var buscar =$("#ok" );----> inicializando el boton
+buscar.click=(busqueda);
+}
+function busqueda( ){
+var valor =$("#busq" );
+
+
+//peticion ajax
+
+$.ajax({
+     type :"Post",
+     url:"/Productos/buscar",
+     data:{
+          buscar:valor.val( )
+          },
+      success: procesar
+});
+
+ return false;
+}
+ funtion procesar(response){
+ var t = $("#resultado" );
+     t.html(response)
+
+}
+///////////controlador
+
+public ActionResult buscar(string buscar )
+
+{
+    var ListaFiltrada= from a in db.(nombre de la tabla)
+                       where a.nombre.contains( buscar)
+                       select a;
+     return PartialView("buscar",ListaFiltrada.ToList() );
+
+}
+
+//////expreciones Regulares//////////////////////////////////////////////////////////////////////////////////////////
+
+
+        [StringLength(50)]
+        [Required]
+        //[RegularExpression("^[a-zA-Z]+?$", ErrorMessage = "Solo se Permiten Letras")]
+        [RegularExpression("^[a-zA-Z Ò—·ÈÌÛ˙¡…Õ”⁄]+?$", ErrorMessage = "Solo se Permiten Letras")]
+        public string nombre { get; set; }
+
+        [StringLength(50)]
+        [Required]
+        [RegularExpression("^[a-zA-Z Ò—·ÈÌÛ˙¡…Õ”⁄]+?$", ErrorMessage = "Solo se Permiten Letras")]
+        public string apellido { get; set; }
+
+        [StringLength(15)]
+        [Required]
+        [RegularExpression(@"^\(?([0-9]{8})\)?[-]([0-9]{1})$", ErrorMessage = "Introduzca un N˙mero V·lido")]
+        public string dui { get; set; }
+        [StringLength(15)]
+        [Required]
+        [RegularExpression(@"^\(?([0-9]{4})\)?[-]([0-9]{4})$", ErrorMessage = "Introduzca un N˙mero V·lido")]
+        public string telefono { get; set; }
+
+
+//////vistas--------------------------------------------------------------------------------------------------------------------------------------
+
+ <div class="form-group"> //radio para el Sexo
+                        @Html.LabelFor(model => model.sexo, "Sexo : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.RadioButtonFor(model => model.sexo, "Mujer", new { id = "Mujer" }) Mujer
+                            @Html.RadioButtonFor(model => model.sexo, "Hombre", new { id = "Hombre" }) Hombre
+                            @Html.ValidationMessageFor(model => model.sexo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+// 
+
+ @{
+      @model IEnumerable<proyectoFinal.Models.cita>
+      List<cita> citas = ViewBag.cita;
+      Html.RenderPartial("~/Views/consultas/info.cshtml", citas);
+
+     public ActionResult info()// vista parcial Creada Anteriormente controlador
+        {
+            var cita = db.cita.Include(c => c.estado).Include(c => c.mascota).Include(c => c.veterinario);
+            return View(cita.ToList());
+        }
+  }
+
+@{
+   IEnumerable<Medicamento> Med = new List<Medicamento>();
+   Med = ViewBag.LTMed;
+
+  public ActionResult Create()
+        {
+            ViewBag.LTmed = db.Medicamento.ToList(); // Carga la lista de Medicamentos View BAg que carga en el modal
+
+
+            ViewBag.codcita = new SelectList(db.cita, "codcita", "codcita");
+            var cita = db.cita.Include(c => c.estado).Include(c => c.mascota).Include(c => c.veterinario);
+            ViewBag.cita = cita.ToList();
+            return View();
+        }
+ }
+<div id="detalles">
+@model ICollection<proyectoFinal.Models.recetaDetalle> ----esto va en la pagina de la vista parcial
+                    @{ Html.RenderPartial("DetallesCrear");}
+</div>
+
